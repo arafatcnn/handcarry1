@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarryBridge — Trusted Peer-to-Peer Hand-Carry Logistics Platform</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;color:#111827;line-height:1.5;font-size:14px}
+  ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+  .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);border-bottom:1px solid #e5e7eb;padding:0 20px;display:flex;align-items:center;height:60px;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .nav-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#111827;text-decoration:none}
+  .nav-icon{width:32px;height:32px;background:linear-gradient(135deg,#2563eb,#0d9488);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+  .nav-links{display:flex;gap:4px;flex:1}
+  .nav-link{padding:6px 12px;font-size:13px;color:#4b5563;border-radius:8px;cursor:pointer;border:none;background:none;font-weight:500;transition:all .15s}
+  .nav-link:hover,.nav-link.active{color:#2563eb;background:#eff6ff}
+  .nav-btns{display:flex;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+  .btn-primary{background:#2563eb;color:#fff}.btn-primary:hover{background:#1d4ed8}
+  .btn-teal{background:#0d9488;color:#fff}.btn-teal:hover{background:#0f766e}
+  .btn-outline{background:#fff;color:#2563eb;border:1.5px solid #2563eb}.btn-outline:hover{background:#eff6ff}
+  .btn-ghost{background:none;color:#4b5563;border:1px solid #d1d5db}.btn-ghost:hover{background:#f9fafb}
+  .btn-amber{background:#d97706;color:#fff}.btn-amber:hover{background:#b45309}
+  .btn-danger{background:#dc2626;color:#fff}.btn-danger:hover{background:#b91c1c}
+  .btn-success{background:#16a34a;color:#fff}.btn-success:hover{background:#15803d}
+  .btn-sm{padding:5px 12px;font-size:12px}
+  .btn-lg{padding:12px 24px;font-size:15px}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid transparent}
+  .badge-blue{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
+  .badge-green{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
+  .badge-amber{background:#fef3c7;color:#92400e;border-color:#fde68a}
+  .badge-red{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+  .badge-gray{background:#f3f4f6;color:#374151;border-color:#e5e7eb}
+  .badge-teal{background:#ccfbf1;color:#0f766e;border-color:#99f6e4}
+  .card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .card-header{padding:16px 20px;border-bottom:1px solid #f3f4f6;font-weight:700;color:#111827}
+  .card-body{padding:20px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g6{grid-template-columns:repeat(6,1fr)}
+  .flex{display:flex;align-items:center;gap:12px}
+  .flex-wrap{flex-wrap:wrap}
+  .flex-col{flex-direction:column;align-items:flex-start}
+  .page{display:none;animation:fadeIn .2s ease}
+  .page.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .hero{background:linear-gradient(135deg,#1e40af 0%,#2563eb 50%,#0d9488 100%);color:#fff;padding:60px 40px;text-align:center}
+  .hero h1{font-size:42px;font-weight:800;margin-bottom:12px;line-height:1.15}
+  .hero p{font-size:17px;opacity:.85;max-width:600px;margin:0 auto 28px}
+  .hero-search{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:16px;max-width:800px;margin:0 auto 28px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px}
+  .hero-search input,.hero-search select{background:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:13px;color:#111827;outline:none;width:100%}
+  .stats-bar{background:rgba(30,64,175,.5);border-top:1px solid rgba(255,255,255,.15);padding:16px 40px;display:grid;grid-template-columns:repeat(4,1fr);text-align:center;gap:20px}
+  .stat-num{font-size:26px;font-weight:800;color:#fff}
+  .stat-label{font-size:12px;color:rgba(255,255,255,.7)}
+  .trust-banner{background:linear-gradient(135deg,#eff6ff,#f0fdfa);border-top:1px solid #bfdbfe;border-bottom:1px solid #bfdbfe;padding:20px 40px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;text-align:center}
+  .trust-item .icon{font-size:24px;margin-bottom:4px}
+  .trust-item .title{font-size:11px;font-weight:700;color:#1e293b}
+  .trust-item .desc{font-size:10px;color:#64748b}
+  .section{padding:48px 40px}
+  .section-title{font-size:26px;font-weight:800;color:#111827;margin-bottom:8px}
+  .section-sub{color:#6b7280;margin-bottom:28px;font-size:14px}
+  .trip-card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:18px;transition:box-shadow .2s}
+  .trip-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+  .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#2dd4bf);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
+  .route-box{background:#f8fafc;border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px;margin:12px 0;text-align:center}
+  .route-city{font-weight:700;font-size:14px;color:#111827}
+  .route-code{font-size:11px;color:#9ca3af}
+  .route-arrow{color:#3b82f6;font-size:18px;flex-shrink:0}
+  .route-date{font-size:11px;color:#9ca3af;margin-top:2px}
+  .stats-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+  .stat-box{padding:10px;border-radius:8px;text-align:center}
+  .stat-box.blue{background:#eff6ff}.stat-box.teal{background:#f0fdfa}
+  .stat-box .val{font-weight:700;font-size:15px;color:#111827}
+  .stat-box .lbl{font-size:11px;margin-bottom:2px}
+  .stat-box.blue .lbl{color:#2563eb}.stat-box.teal .lbl{color:#0d9488}
+  .safety-notice{background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:10px;font-size:11px;color:#92400e;margin:10px 0}
+  .warning-box{background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:10px;font-size:11px;color:#dc2626;margin:10px 0}
+  .tags{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+  .tag{background:#f3f4f6;color:#374151;border-radius:999px;padding:2px 8px;font-size:11px}
+  .role-card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;transition:box-shadow .2s;cursor:pointer}
+  .role-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.1)}
+  .role-card-top{height:4px}
+  .role-card-body{padding:20px}
+  .role-icon{font-size:36px;margin-bottom:12px}
+  .role-title{font-weight:700;font-size:16px;margin-bottom:6px;color:#111827}
+  .role-desc{font-size:12px;color:#6b7280;line-height:1.5;margin-bottom:14px}
+  .step-card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:18px;text-align:center}
+  .step-num{width:36px;height:36px;border-radius:50%;background:#2563eb;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+  .step-icon{font-size:24px;margin-bottom:8px}
+  .step-title{font-weight:700;font-size:13px;margin-bottom:6px;color:#111827}
+  .step-desc{font-size:11px;color:#6b7280;line-height:1.5}
+  .sidebar{width:240px;background:#fff;border-right:1px solid #e5e7eb;min-height:calc(100vh - 60px);padding:12px;position:sticky;top:60px;flex-shrink:0}
+  .sidebar-user{padding:12px;border-bottom:1px solid #f3f4f6;margin-bottom:8px}
+  .sidebar-name{font-weight:700;font-size:13px;color:#111827}
+  .sidebar-meta{font-size:11px;color:#22c55e;margin-top:2px}
+  .trust-bar{margin-top:8px}
+  .trust-bar-label{display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-bottom:3px}
+  .trust-bar-track{height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+  .trust-bar-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#0d9488);border-radius:3px}
+  .sidebar-nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:13px;color:#4b5563;cursor:pointer;margin-bottom:2px;transition:all .15s;font-weight:500}
+  .sidebar-nav-item:hover{background:#f3f4f6;color:#111827}
+  .sidebar-nav-item.active{background:#eff6ff;color:#2563eb}
+  .dash-main{flex:1;padding:24px;overflow-y:auto;max-width:calc(100vw - 240px)}
+  .dash-layout{display:flex;min-height:calc(100vh - 60px)}
+  .summary-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+  .sum-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px}
+  .sum-card .icon{font-size:22px;margin-bottom:6px}
+  .sum-card .val{font-size:20px;font-weight:700;color:#111827}
+  .sum-card .lbl{font-size:11px;color:#6b7280;margin-top:2px}
+  .sum-card .sub{font-size:11px;color:#3b82f6;font-weight:600;margin-top:3px}
+  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .booking-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f3f4f6}
+  .booking-item:last-child{border-bottom:none}
+  .msg-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid #f3f4f6;cursor:pointer}
+  .msg-item:hover{background:#f9fafb}
+  .msg-sender{font-weight:700;font-size:12px;color:#111827}
+  .msg-preview{font-size:11px;color:#6b7280;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+  .msg-time{font-size:10px;color:#9ca3af}
+  .chat-area{display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:500px;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden}
+  .chat-header{padding:12px 16px;border-bottom:1px solid #e5e7eb;background:#f9fafb;display:flex;align-items:center;justify-content:space-between}
+  .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+  .msg-bubble{max-width:70%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.5}
+  .msg-me{background:#2563eb;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  .msg-other{background:#f3f4f6;color:#111827;align-self:flex-start;border-bottom-left-radius:4px}
+  .msg-system{background:#eff6ff;color:#1d4ed8;align-self:center;border-radius:8px;padding:8px 12px;font-size:11px;border:1px solid #bfdbfe;max-width:90%;text-align:center}
+  .chat-input{padding:12px 16px;border-top:1px solid #e5e7eb;display:flex;gap:10px;align-items:center}
+  .chat-input textarea{flex:1;border:1px solid #d1d5db;border-radius:10px;padding:10px;font-size:13px;resize:none;outline:none;font-family:inherit}
+  .chat-input textarea:focus{border-color:#2563eb;box-shadow:0 0 0 2px rgba(37,99,235,.1)}
+  .admin-sidebar{width:200px;background:#1f2937;min-height:calc(100vh - 48px);padding:8px;flex-shrink:0}
+  .admin-nav-item{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:6px;font-size:12px;color:#9ca3af;cursor:pointer;border:none;background:none;margin-bottom:2px;transition:all .15s;font-weight:500}
+  .admin-nav-item:hover{background:#374151;color:#fff}
+  .admin-nav-item.active{background:#2563eb;color:#fff}
+  .table{width:100%;border-collapse:collapse}
+  .table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:#6b7280;background:#f9fafb;border-bottom:1px solid #e5e7eb}
+  .table td{padding:10px 14px;font-size:12px;border-bottom:1px solid #f3f4f6;color:#374151}
+  .table tr:hover td{background:#f9fafb}
+  .form-group{margin-bottom:14px}
+  .form-label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:5px}
+  .form-input{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:9px 12px;font-size:13px;color:#111827;outline:none;transition:.15s;font-family:inherit}
+  .form-input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .form-select{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:9px 12px;font-size:13px;color:#111827;background:#fff;cursor:pointer;outline:none}
+  .form-textarea{width:100%;border:1.5px solid #d1d5db;border-radius:8px;padding:9px 12px;font-size:13px;color:#111827;resize:none;outline:none;font-family:inherit;min-height:80px}
+  .form-textarea:focus,.form-select:focus{border-color:#2563eb}
+  .progress-steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
+  .step-dot{width:28px;height:28px;border-radius:50%;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:#fff;color:#6b7280}
+  .step-dot.done{background:#2563eb;border-color:#2563eb;color:#fff}
+  .step-dot.current{border-color:#2563eb;color:#2563eb}
+  .step-line{flex:1;height:2px;background:#e5e7eb}
+  .step-line.done{background:#2563eb}
+  .step-label{font-size:10px;text-align:center;margin-top:4px;color:#6b7280;white-space:nowrap}
+  .step-label.current{color:#2563eb;font-weight:600}
+  .prohibited-card{display:flex;gap:12px;padding:14px;border-radius:10px;border:1px solid #fee2e2;background:#fff5f5}
+  .prohibited-card.conditional{border-color:#fde68a;background:#fffbeb}
+  .country-card{padding:12px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+  .country-card:hover,.country-card.selected{border-color:#3b82f6;background:#eff6ff}
+  .country-detail{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:24px}
+  .rule-box{background:#fff;border-radius:10px;border:1px solid #e5e7eb;padding:14px;margin-bottom:10px}
+  .footer{background:#111827;color:#9ca3af;padding:48px 40px;margin-top:40px}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:32px;margin-bottom:32px}
+  .footer-brand{font-weight:800;font-size:18px;color:#fff;margin-bottom:8px}
+  .footer-desc{font-size:12px;line-height:1.6;margin-bottom:16px}
+  .footer-head{font-weight:700;font-size:13px;color:#fff;margin-bottom:10px}
+  .footer-link{display:block;font-size:12px;color:#6b7280;margin-bottom:5px;cursor:pointer;transition:color .15s}
+  .footer-link:hover{color:#e5e7eb}
+  .footer-disclaimer{background:rgba(180,83,9,.15);border:1px solid rgba(180,83,9,.3);border-radius:8px;padding:10px;font-size:11px;color:#fbbf24;margin-bottom:16px;line-height:1.5}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#4b5563;border-top:1px solid #1f2937;padding-top:16px}
+  .sponsor-card{border:1px solid #e5e7eb;border-radius:12px;padding:18px;border-left:4px solid #f59e0b;background:#fff;transition:box-shadow .2s}
+  .sponsor-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+  .wallet-card{border-radius:12px;padding:18px;color:#fff;position:relative;overflow:hidden}
+  .wallet-card.blue{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+  .wallet-card.amber{background:linear-gradient(135deg,#f59e0b,#d97706)}
+  .wallet-card.green{background:linear-gradient(135deg,#16a34a,#0f766e)}
+  .input-group{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .check-group{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:12px;color:#374151;cursor:pointer}
+  .pill-select{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .pill{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:500;border:1.5px solid #d1d5db;cursor:pointer;background:#fff;color:#374151;transition:all .15s}
+  .pill.selected{background:#2563eb;color:#fff;border-color:#2563eb}
+  .match-score{display:inline-flex;align-items:center;gap:4px;background:#eff6ff;color:#1d4ed8;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;border:1px solid #bfdbfe}
+  .dispute-item{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;margin-bottom:10px}
+  @media(max-width:768px){
+    .hero h1{font-size:26px} .hero{padding:40px 16px} .g3,.g4,.g6{grid-template-columns:1fr 1fr} .trust-banner{grid-template-columns:repeat(3,1fr)} .stats-bar{grid-template-columns:repeat(2,1fr)} .section{padding:32px 16px} .hero-search{grid-template-columns:1fr;gap:8px} .footer-grid{grid-template-columns:1fr 1fr}
+    .sidebar{display:none} .dash-main{max-width:100%;padding:16px}
+    .summary-cards{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ NAVBAR ════════════════════ -->
+<nav class="nav">
+  <a class="nav-logo" onclick="showPage('home')">
+    <div class="nav-icon">✈</div>
+    Carry<span style="color:#2563eb">Bridge</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link" onclick="showPage('find-traveler')">Find Traveler</button>
+    <button class="nav-link" onclick="showPage('send-item')">Send Item</button>
+    <button class="nav-link" onclick="showPage('sponsorship')">Sponsorship</button>
+    <button class="nav-link" onclick="showPage('how-it-works')">How It Works</button>
+    <button class="nav-link" onclick="showPage('safety')">Safety</button>
+    <button class="nav-link" onclick="showPage('country-rules')">Country Rules</button>
+    <button class="nav-link" onclick="showPage('pricing')">Pricing</button>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-ghost btn-sm" onclick="showPage('login')">Sign In</button>
+    <button class="btn btn-primary btn-sm" onclick="showPage('signup')">Get Started</button>
+  </div>
+</nav>
+
+<!-- ════════════════════ PAGE: HOME ════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 14px;font-size:12px;margin-bottom:16px;font-weight:600">
+      🌍 Now live in 180+ countries
+    </div>
+    <h1>The World's Most Trusted<br><span style="color:#5eead4">Hand-Carry Marketplace</span></h1>
+    <p>Send items internationally through verified travelers. Find flights with empty luggage space. Get your ticket sponsored for carrying legal cargo. No more chaotic WhatsApp groups.</p>
+    <div class="hero-search">
+      <input placeholder="📍 From city or country" style="font-size:13px">
+      <input placeholder="📍 To city or country">
+      <input type="date">
+      <button class="btn btn-teal" onclick="showPage('find-traveler')">🔍 Search Trips</button>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" style="background:#fff;color:#1e40af;font-weight:700" onclick="showPage('send-item')">📦 Send an Item</button>
+      <button class="btn btn-outline" style="border-color:rgba(255,255,255,.6);color:#fff;background:rgba(255,255,255,.1)" onclick="showPage('find-traveler')">✈️ Find Traveler</button>
+      <button class="btn btn-outline" style="border-color:rgba(255,255,255,.6);color:#fff;background:rgba(255,255,255,.1)" onclick="showPage('sponsorship')">🎫 Get Sponsored</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div><div class="stat-num">180+</div><div class="stat-label">Countries</div></div>
+    <div><div class="stat-num">50K+</div><div class="stat-label">Verified Users</div></div>
+    <div><div class="stat-num">98%</div><div class="stat-label">Delivery Rate</div></div>
+    <div><div class="stat-num">$0</div><div class="stat-label">Hidden Fees</div></div>
+  </div>
+
+  <!-- TRUST BANNER -->
+  <div class="trust-banner">
+    <div class="trust-item"><div class="icon">🔐</div><div class="title">KYC Verified Users</div><div class="desc">Identity verified before any transaction</div></div>
+    <div class="trust-item"><div class="icon">🛡️</div><div class="title">Escrow Protection</div><div class="desc">Funds held safely until delivery confirmed</div></div>
+    <div class="trust-item"><div class="icon">📸</div><div class="title">Mandatory Inspection</div><div class="desc">Travelers inspect all items before carrying</div></div>
+    <div class="trust-item"><div class="icon">🌍</div><div class="title">180+ Countries</div><div class="desc">Country-specific customs guidance built-in</div></div>
+    <div class="trust-item"><div class="icon">⭐</div><div class="title">Trust Scores</div><div class="desc">Ratings, reviews & completion rates displayed</div></div>
+    <div class="trust-item"><div class="icon">🚨</div><div class="title">Fraud Reporting</div><div class="desc">24/7 dispute center and compliance team</div></div>
+  </div>
+
+  <!-- WHO USES CARRYBRIDGE -->
+  <div class="section" style="background:#fff">
+    <div style="text-align:center;margin-bottom:28px">
+      <div class="section-title">Who Uses CarryBridge?</div>
+      <div class="section-sub">A structured marketplace built for four key players in the global hand-carry ecosystem.</div>
+    </div>
+    <div class="grid g4">
+      <div class="role-card" onclick="showPage('send-item')">
+        <div class="role-card-top" style="background:linear-gradient(90deg,#2563eb,#3b82f6)"></div>
+        <div class="role-card-body">
+          <div class="role-icon">📦</div>
+          <div class="role-title">Sender / Shipper</div>
+          <div class="role-desc">Send packages internationally through verified travelers — faster than freight, cheaper than courier.</div>
+          <button class="btn btn-outline btn-sm" style="width:100%">Post a Shipment →</button>
+        </div>
+      </div>
+      <div class="role-card" onclick="showPage('trips-new')">
+        <div class="role-card-top" style="background:linear-gradient(90deg,#0d9488,#14b8a6)"></div>
+        <div class="role-card-body">
+          <div class="role-icon">✈️</div>
+          <div class="role-title">Traveler / Carrier</div>
+          <div class="role-desc">Monetize your empty luggage space. Earn carrying fees on your existing trips.</div>
+          <button class="btn btn-outline btn-sm" style="width:100%">Post a Trip →</button>
+        </div>
+      </div>
+      <div class="role-card" onclick="showPage('sponsorship')">
+        <div class="role-card-top" style="background:linear-gradient(90deg,#d97706,#f59e0b)"></div>
+        <div class="role-card-body">
+          <div class="role-icon">🎫</div>
+          <div class="role-title">Sponsored Traveler</div>
+          <div class="role-desc">Need a flight? Offer to carry legal declared cargo in exchange for full or partial ticket funding.</div>
+          <button class="btn btn-outline btn-sm" style="width:100%">Find Sponsorship →</button>
+        </div>
+      </div>
+      <div class="role-card" onclick="showPage('sponsorship')">
+        <div class="role-card-top" style="background:linear-gradient(90deg,#7c3aed,#8b5cf6)"></div>
+        <div class="role-card-body">
+          <div class="role-icon">💼</div>
+          <div class="role-title">Sponsor / Cargo Owner</div>
+          <div class="role-desc">Fund a traveler's ticket in exchange for carrying your legally declared cargo on their route.</div>
+          <button class="btn btn-outline btn-sm" style="width:100%">Post Sponsorship →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section" style="background:#f9fafb">
+    <div style="text-align:center;margin-bottom:28px">
+      <div class="badge badge-blue" style="margin-bottom:10px">How It Works</div>
+      <div class="section-title">Safe. Simple. Global.</div>
+      <div class="section-sub">Every transaction follows a structured, trust-first workflow. No anonymous deals. No sealed unknowns.</div>
+    </div>
+    <div class="grid g4" style="grid-template-columns:repeat(5,1fr)">
+      <div class="step-card"><div class="step-num">1</div><div class="step-icon">📝</div><div class="step-title">Post Your Need</div><div class="step-desc">Sender posts item with photos, invoice, declared value. Traveler posts available space and categories.</div></div>
+      <div class="step-card"><div class="step-num">2</div><div class="step-icon">🤝</div><div class="step-title">Smart Matching</div><div class="step-desc">Algorithm matches senders & travelers by route, date, weight, category, and trust score.</div></div>
+      <div class="step-card"><div class="step-num">3</div><div class="step-icon">🔐</div><div class="step-title">KYC & Inspection</div><div class="step-desc">Both parties verify identity. Traveler physically inspects and photographs all items before pickup.</div></div>
+      <div class="step-card"><div class="step-num">4</div><div class="step-icon">💳</div><div class="step-title">Escrow Payment</div><div class="step-desc">Sender deposits fee into secure escrow. Funds only released upon confirmed delivery.</div></div>
+      <div class="step-card"><div class="step-num">5</div><div class="step-icon">✅</div><div class="step-title">Deliver & Review</div><div class="step-desc">Recipient confirms via OTP/QR. Escrow releases. Both parties leave verified reviews.</div></div>
+    </div>
+  </div>
+
+  <!-- LIVE TRIPS -->
+  <div class="section" style="background:#fff">
+    <div class="section-header">
+      <div><div class="section-title" style="font-size:20px">Live Trip Listings</div><div style="font-size:13px;color:#6b7280;margin-top:2px">Verified travelers with available space — updated in real time</div></div>
+      <button class="btn btn-outline btn-sm" onclick="showPage('find-traveler')">View All →</button>
+    </div>
+    <div class="grid g3" id="home-trips"></div>
+  </div>
+
+  <!-- POPULAR ROUTES -->
+  <div style="background:linear-gradient(135deg,#1e40af,#2563eb);padding:48px 40px">
+    <div style="text-align:center;margin-bottom:24px;color:#fff">
+      <div style="font-size:22px;font-weight:700;margin-bottom:6px">Popular Global Routes</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.7)">Find active trips on the world's most traveled corridors</div>
+    </div>
+    <div class="grid g6">
+      ${[["Dhaka","London","🇧🇩","🇬🇧",24],["Dubai","Toronto","🇦🇪","🇨🇦",18],["Delhi","Sydney","🇮🇳","🇦🇺",15],["Istanbul","New York","🇹🇷","🇺🇸",21],["KL","Doha","🇲🇾","🇶🇦",12],["Lagos","London","🇳🇬","🇬🇧",9]].map(r=>`<div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.12)'" onclick="showPage('find-traveler')"><div style="font-size:18px;margin-bottom:4px">${r[2]} → ${r[3]}</div><div style="font-weight:600;font-size:13px;color:#fff">${r[0]} → ${r[1]}</div><div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:3px">${r[4]} active trips</div></div>`).join("")}
+    </div>
+  </div>
+
+  <!-- SAFETY -->
+  <div class="section" style="background:#fff">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+      <div>
+        <div class="badge badge-red" style="margin-bottom:12px">Safety First — Always</div>
+        <div class="section-title" style="font-size:26px">Built for Legal, Declared Transactions Only</div>
+        <p style="color:#6b7280;margin:12px 0 20px;line-height:1.6">CarryBridge is fundamentally different from chaotic Facebook groups. Every transaction is structured around compliance, transparency, and traveler safety.</p>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          ${[["🚫","Zero Unknown Sealed Packages","Travelers must physically inspect and photograph all items before accepting."],["📋","Mandatory Declaration","Every item requires declared value, category, photos, and invoice for high-value goods."],["⚖️","Customs Responsibility Assigned","All bookings clearly state who bears customs duty responsibility — no ambiguity."],["🌍","Country Rule Center","Built-in guidance for 180+ countries — food, medicine, electronics, battery rules."]].map(i=>`<div style="display:flex;gap:12px"><div style="font-size:24px;flex-shrink:0">${i[0]}</div><div><div style="font-weight:600;color:#111827;font-size:13px">${i[1]}</div><div style="font-size:12px;color:#6b7280;margin-top:2px">${i[2]}</div></div></div>`).join("")}
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px">
+          <button class="btn btn-primary" onclick="showPage('safety')">Read Safety Guide →</button>
+          <button class="btn btn-outline" onclick="showPage('prohibited')">Prohibited Items</button>
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,#fff5f5,#fff7ed);border:1px solid #fecaca;border-radius:16px;padding:24px">
+        <div style="font-weight:700;color:#111827;margin-bottom:14px;font-size:16px">⚠️ Absolutely Prohibited on CarryBridge</div>
+        ${["🚫 Drugs, narcotics, or controlled substances","💣 Weapons, explosives, or hazardous materials","📦 Unknown or sealed packages (zero exceptions)","💊 Illegal or undeclared prescription medicines","🏷️ Counterfeit or pirated goods of any kind","💰 Undeclared cash over country limits","🥇 Undeclared gold bullion or precious metals","🐾 Live animals without proper documentation","🔞 Pornographic or prohibited content"].map(i=>`<div style="background:rgba(255,255,255,.7);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:12px;color:#374151">${i}</div>`).join("")}
+        <div style="background:#fee2e2;border-radius:8px;padding:10px;margin-top:10px;font-size:11px;color:#dc2626">Violation: permanent ban, report to authorities, and legal action where applicable.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section" style="background:#f9fafb">
+    <div style="text-align:center;margin-bottom:24px"><div class="section-title" style="font-size:20px">Trusted by Travelers Worldwide</div></div>
+    <div class="grid g3">
+      ${[["Arif R.","🇧🇩 Bangladesh","Frequent Traveler","I've made over $1,200 in extra income carrying items on my UK-Dhaka routes. The KYC and escrow systems make me feel completely safe."],["Priya M.","🇮🇳 India","Regular Sender","Sent 4 shipments to family in Australia. Every traveler inspected items, everything declared properly. Zero issues. This is how it should be done."],["Elif Y.","🇹🇷 Turkey","Sponsored Traveler","CarryBridge paid for my Istanbul-New York ticket through a cargo sponsor. All items were legal, fully declared. It changed how I travel."]].map(t=>`<div class="card"><div class="card-body"><div style="color:#fbbf24;margin-bottom:10px">★★★★★</div><p style="color:#4b5563;font-size:13px;margin-bottom:12px;font-style:italic">"${t[3]}"</p><div style="font-weight:700;font-size:13px;color:#111827">${t[0]}</div><div style="font-size:11px;color:#6b7280">${t[1]} · ${t[2]}</div></div></div>`).join("")}
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:linear-gradient(135deg,#1e40af,#0f766e);padding:64px 40px;text-align:center;color:#fff">
+    <div style="font-size:30px;font-weight:800;margin-bottom:12px">Ready to CarryBridge the World?</div>
+    <p style="color:rgba(255,255,255,.8);font-size:16px;margin-bottom:24px">Join 50,000+ verified users sending items safely across 180+ countries. Free to join. Pay only on successful delivery.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-lg" style="background:#fff;color:#1e40af;font-weight:700" onclick="showPage('signup')">Get Started Free →</button>
+      <button class="btn btn-lg btn-outline" style="border-color:rgba(255,255,255,.5);color:#fff;background:rgba(255,255,255,.1)" onclick="showPage('how-it-works')">Watch How It Works</button>
+    </div>
+    <p style="font-size:11px;color:rgba(255,255,255,.5);margin-top:16px">No credit card required • Free account • KYC verification guided step-by-step</p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">✈ CarryBridge</div>
+        <p class="footer-desc">The world's trusted peer-to-peer hand-carry logistics marketplace. Legal-first. Trust-first. Global.</p>
+      </div>
+      ${[["Platform",["Find Traveler","Send Item","Sponsorship","How It Works","Pricing"]],["Trust & Safety",["Safety Center","Prohibited Items","Country Rules","Help Center"]],["Company",["About Us","Contact","Blog"]],["Legal",["Terms of Service","Privacy Policy","Prohibited Items Policy","Compliance"]]].map(([h,links])=>`<div><div class="footer-head">${h}</div>${links.map(l=>`<div class="footer-link">${l}</div>`).join("")}</div>`).join("")}
+    </div>
+    <div class="footer-disclaimer">⚠️ <strong>Important Disclaimer:</strong> CarryBridge is a marketplace platform. All customs declarations and legal compliance are the sole responsibility of involved parties. Country rules displayed are advisory only — always verify with official government sources. CarryBridge does not facilitate customs evasion.</div>
+    <div class="footer-bottom">
+      <span>© 2026 CarryBridge Technologies Ltd. All rights reserved.</span>
+      <div style="display:flex;gap:16px"><span>🔒 SSL Secured</span><span>🛡️ GDPR Ready</span><span>🌍 180+ Countries</span><span>✈️ IATA Aware</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE: FIND TRAVELER ════════════════════ -->
+<div id="page-find-traveler" class="page">
+  <div style="background:linear-gradient(135deg,#1e40af,#0d9488);color:#fff;padding:40px">
+    <div class="badge badge-amber" style="margin-bottom:10px">Live Listings</div>
+    <div style="font-size:26px;font-weight:800;margin-bottom:6px">Find a Traveler</div>
+    <div style="color:rgba(255,255,255,.8);font-size:14px">Browse verified travelers with available luggage space on your route.</div>
+  </div>
+  <div style="display:grid;grid-template-columns:260px 1fr;gap:24px;padding:24px 40px;max-width:1400px;margin:0 auto">
+    <!-- Filters -->
+    <div>
+      <div class="card" style="position:sticky;top:80px">
+        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">🔍 Filter Trips <button style="font-size:11px;color:#2563eb;background:none;border:none;cursor:pointer">Reset</button></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-group" style="margin-bottom:0"><label class="form-label">From Country</label><select class="form-select"><option>Any country</option><option>🇧🇩 Bangladesh</option><option>🇬🇧 United Kingdom</option><option>🇦🇪 UAE</option><option>🇮🇳 India</option><option>🇺🇸 USA</option><option>🇨🇦 Canada</option></select></div>
+          <div class="form-group" style="margin-bottom:0"><label class="form-label">To Country</label><select class="form-select"><option>Any country</option><option>🇧🇩 Bangladesh</option><option>🇬🇧 United Kingdom</option><option>🇦🇺 Australia</option><option>🇨🇦 Canada</option><option>🇶🇦 Qatar</option></select></div>
+          <div class="form-group" style="margin-bottom:0"><label class="form-label">Departure Date</label><input type="date" class="form-input"></div>
+          <div class="form-group" style="margin-bottom:0"><label class="form-label">Item Category</label><select class="form-select"><option>Any category</option><option>Electronics</option><option>Clothing & Fashion</option><option>Documents</option><option>Food (dry, sealed)</option><option>Medicine / Health</option></select></div>
+          <div class="form-group" style="margin-bottom:0"><label class="form-label">Min Space (kg)</label><input type="number" class="form-input" placeholder="e.g. 5"></div>
+          <div class="form-group" style="margin-bottom:0"><label class="form-label">Max Fee (USD)</label><input type="number" class="form-input" placeholder="e.g. 100"></div>
+          <label class="check-group"><input type="checkbox"> KYC Verified Only</label>
+          <label class="check-group"><input type="checkbox"> Open to Ticket Sponsorship</label>
+          <div class="safety-notice">⚠️ Always request item inspection and full declaration before any pickup. Never carry sealed unknown packages.</div>
+          <button class="btn btn-outline btn-sm" style="width:100%">🔔 Save This Route Alert</button>
+        </div>
+      </div>
+    </div>
+    <!-- Results -->
+    <div>
+      <div class="section-header">
+        <div><span style="font-weight:700">6 trips found</span> <span style="color:#6b7280;font-size:13px">matching your criteria</span></div>
+        <select class="form-select" style="width:200px;padding:6px 10px;font-size:12px"><option>Sort: Departure Date</option><option>Sort: Rating</option><option>Sort: Most Space</option></select>
+      </div>
+      <div class="grid g3" id="finder-trips"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE: SEND ITEM ════════════════════ -->
+<div id="page-send-item" class="page">
+  <div style="background:linear-gradient(135deg,#0f766e,#1d4ed8);color:#fff;padding:40px">
+    <div class="badge badge-amber" style="margin-bottom:10px">Senders</div>
+    <div style="font-size:26px;font-weight:800;margin-bottom:6px">Send an Item Internationally</div>
+    <div style="color:rgba(255,255,255,.8);font-size:14px">Post your shipment and let verified travelers carry it for you.</div>
+  </div>
+  <div style="max-width:800px;margin:32px auto;padding:0 24px">
+    <!-- Step indicator -->
+    <div style="display:flex;align-items:center;margin-bottom:24px">
+      ${["Item Details","Origin & Dest.","Photos & Docs","Offer & Terms","Review"].map((s,i)=>`<div style="display:flex;align-items:center;flex:1 0 0">${i>0?`<div style="flex:1;height:2px;background:${i===1?'#2563eb':'#e5e7eb'}"></div>`:''}  <div style="display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:28px;height:28px;border-radius:50%;border:2px solid ${i===0?'#2563eb':'#d1d5db'};background:${i===0?'#2563eb':'#fff'};color:${i===0?'#fff':'#6b7280'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${i===0?'1':i+1}</div><div style="font-size:10px;color:${i===0?'#2563eb':'#9ca3af'};font-weight:${i===0?'600':'400'};white-space:nowrap">${s}</div></div></div>`).join("")}
+    </div>
+    <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:14px;margin-bottom:20px;display:flex;gap:12px">
+      <span style="font-size:22px">⚠️</span>
+      <div><div style="font-weight:700;color:#92400e;font-size:13px;margin-bottom:3px">CarryBridge Compliance Notice</div><p style="font-size:12px;color:#78350f;line-height:1.5">You are responsible for ensuring all items are legal in both origin and destination countries. Provide accurate declared value and category. CarryBridge requires full transparency — senders who misrepresent items will be permanently banned and reported to authorities.</p></div>
+    </div>
+    <div class="card">
+      <div class="card-header">Step 1: Item Details</div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Item Title *</label><input class="form-input" placeholder="e.g. Samsung Galaxy S24 (1 unit, personal use)"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Category *</label><select class="form-select"><option>Select category</option><option>Electronics</option><option>Clothing & Fashion</option><option>Documents</option><option>Food (dry, sealed, packaged)</option><option>Cosmetics & Beauty</option><option>Medicine / Health</option><option>Jewelry (declared)</option></select></div>
+        <!-- Electronics panel -->
+        <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:14px">
+          <div style="font-weight:700;color:#dc2626;font-size:13px;margin-bottom:10px">📱 Electronics — Additional Required Details</div>
+          <div class="input-group">
+            <div class="form-group" style="margin-bottom:0"><label class="form-label">Brand</label><input class="form-input" placeholder="e.g. Samsung, Apple"></div>
+            <div class="form-group" style="margin-bottom:0"><label class="form-label">Model</label><input class="form-input" placeholder="e.g. Galaxy S24"></div>
+            <div class="form-group" style="margin-bottom:0"><label class="form-label">IMEI / Serial (optional)</label><input class="form-input" placeholder="For phones"></div>
+            <div class="form-group" style="margin-bottom:0"><label class="form-label">Quantity *</label><input type="number" class="form-input" value="1" min="1"></div>
+          </div>
+          <div style="background:#fee2e2;border-radius:8px;padding:10px;margin-top:10px;font-size:11px;color:#dc2626">⚠️ More than 1 phone may be considered commercial quantity in many countries (UK, USA, Australia, Bangladesh). This listing may be flagged for admin review.<br><br>🔋 Lithium battery items must follow IATA airline rules. Loose batteries in carry-on only.</div>
+        </div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Description *</label><textarea class="form-textarea" placeholder="Describe the item clearly — color, condition, purpose. Be specific."></textarea></div>
+        <div class="input-group">
+          <div class="form-group" style="margin-bottom:0"><label class="form-label">Weight (kg) *</label><input type="number" class="form-input" placeholder="0.5"></div>
+          <div class="form-group" style="margin-bottom:0"><label class="form-label">Declared Value (USD) *</label><input type="number" class="form-input" placeholder="0.00"></div>
+        </div>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px;font-size:11px;color:#1d4ed8">💡 Declared value must match your invoice. Undervaluing items for customs purposes is illegal and violates CarryBridge terms.</div>
+        <div style="display:flex;justify-content:flex-end;padding-top:10px;border-top:1px solid #f3f4f6">
+          <button class="btn btn-primary">Continue →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipment listings below -->
+    <div style="margin-top:32px">
+      <div class="section-header"><div style="font-weight:700;font-size:16px">Open Shipment Requests</div><span style="font-size:13px;color:#6b7280">Travelers — find a shipment to carry</span></div>
+      <div class="grid g3" id="shipment-cards"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE: SPONSORSHIP ════════════════════ -->
+<div id="page-sponsorship" class="page">
+  <div style="background:linear-gradient(135deg,#b45309,#d97706);color:#fff;padding:40px">
+    <div class="badge" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3);margin-bottom:10px">🎫 Travel Sponsorship</div>
+    <div style="font-size:26px;font-weight:800;margin-bottom:6px">Sponsored Travel Marketplace</div>
+    <div style="color:rgba(255,255,255,.8);font-size:14px;max-width:600px">Get your flight funded in exchange for carrying legal, declared cargo — or find a verified traveler to carry your goods on a route you're funding.</div>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:24px 40px">
+    <!-- How it works -->
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-header">How Sponsorship Works</div>
+      <div class="card-body">
+        <div class="grid g2">
+          <div>
+            <div style="font-weight:700;color:#b45309;margin-bottom:10px;font-size:13px">🧳 For Travelers Seeking Sponsorship</div>
+            ${["Post your desired route, dates, and cargo capacity","Sponsors review your profile and KYC verification","Accept a sponsor offer and agree on cargo terms","All cargo must be declared and inspected before pickup","Ticket funded via escrow — released in milestones","Complete delivery → funds released in full"].map((s,i)=>`<div style="display:flex;gap:8px;margin-bottom:6px;font-size:12px;color:#374151"><span style="width:20px;height:20px;border-radius:50%;background:#fef3c7;color:#92400e;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${i+1}</span>${s}</div>`).join("")}
+          </div>
+          <div>
+            <div style="font-weight:700;color:#6d28d9;margin-bottom:10px;font-size:13px">💼 For Sponsors / Cargo Owners</div>
+            ${["Post your cargo route, weight, categories, and ticket budget","Review verified traveler applications","Select traveler based on rating, verification, and fit","Open cargo inspection by traveler is mandatory","Fund ticket through escrow with milestone structure","Delivery OTP confirmation triggers final payment"].map((s,i)=>`<div style="display:flex;gap:8px;margin-bottom:6px;font-size:12px;color:#374151"><span style="width:20px;height:20px;border-radius:50%;background:#ede9fe;color:#6d28d9;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${i+1}</span>${s}</div>`).join("")}
+          </div>
+        </div>
+        <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:12px;margin-top:14px;font-size:12px;color:#dc2626">🔐 <strong>Safety requirement:</strong> All sponsored travel cargo must be fully declared, invoiced, photographed, and physically inspected by the traveler before pickup. No sealed, unknown, or undeclared packages. Both parties must pass KYC verification before funds are released.</div>
+      </div>
+    </div>
+    <!-- Milestone tracker -->
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-header">📍 Sponsorship Milestone System</div>
+      <div class="card-body" style="overflow-x:auto">
+        <div style="display:flex;align-items:flex-start;gap:8px;min-width:600px">
+          ${[["⏳","Fund Pending",1],["💳","Funded",0],["🎫","Ticket Purchased",0],["✈️","Check-in Confirmed",0],["🌍","In Transit",0],["✅","Delivered",0],["🏆","Completed",0]].map((m,i)=>`<div style="display:flex;align-items:center;flex:1 0 0">${i>0?`<div style="flex:1;height:2px;background:#e5e7eb"></div>`:''}  <div style="text-align:center;opacity:${m[2]?1:.45}"><div style="width:40px;height:40px;border-radius:50%;background:${m[2]?'#f59e0b':'#f3f4f6'};display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto">${m[0]}</div><div style="font-size:10px;font-weight:700;color:#111827;margin-top:4px;white-space:nowrap">${m[1]}</div></div></div>`).join("")}
+        </div>
+      </div>
+    </div>
+    <div class="section-header">
+      <div><span style="font-weight:700">3 active sponsorship listings</span></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-primary btn-sm">All</button>
+        <button class="btn btn-ghost btn-sm">Travelers Seeking Sponsors</button>
+        <button class="btn btn-ghost btn-sm">Sponsors Seeking Travelers</button>
+      </div>
+    </div>
+    <div class="grid g3" id="sponsor-cards"></div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE: DASHBOARD ════════════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="dash-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-user">
+        <div class="flex" style="gap:10px;margin-bottom:10px">
+          <div class="avatar" style="width:36px;height:36px;font-size:12px">JL</div>
+          <div><div class="sidebar-name">Jordan Lee</div><div class="sidebar-meta">✓ Verified · ⭐ 4.8</div></div>
+        </div>
+        <div class="trust-bar"><div class="trust-bar-label"><span>Trust Score</span><span style="color:#2563eb;font-weight:700">94/100</span></div><div class="trust-bar-track"><div class="trust-bar-fill" style="width:94%"></div></div></div>
+      </div>
+      <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:#92400e">⚡ 3 pending actions require attention</div>
+      ${[["🏠","Dashboard","page-dashboard"],["👤","My Profile","page-profile"],["✈️","My Trips","page-trips"],["📦","My Shipments","page-shipments"],["📋","Bookings","page-bookings"],["💬","Messages","page-messages",3],["💳","Wallet & Payments","page-wallet"],["⭐","Reviews","page-reviews"],["🔔","Saved Alerts","page-alerts"],["⚖️","Disputes","page-disputes"],["🔐","Verification Center","page-verification"]].map(([i,l,p,b])=>`<div class="sidebar-nav-item${p==='page-dashboard'?' active':''}" onclick="showPage('${p}')"><span>${i}</span><span style="flex:1">${l}</span>${b?`<span style="background:#ef4444;color:#fff;border-radius:999px;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${b}</span>`:''}</div>`).join("")}
+      <div style="margin-top:auto;padding-top:12px;border-top:1px solid #f3f4f6;margin-top:16px">
+        <div class="sidebar-nav-item" onclick="showPage('admin')">🛡️ Admin Panel</div>
+        <div class="sidebar-nav-item" onclick="showPage('home')">← Back to Site</div>
+        <div class="sidebar-nav-item" style="color:#ef4444">🚪 Sign Out</div>
+      </div>
+    </div>
+    <!-- Main -->
+    <div class="dash-main">
+      <div class="flex" style="justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+        <div><div style="font-size:22px;font-weight:800;color:#111827">Welcome back, Jordan! 👋</div><div style="color:#6b7280;font-size:13px">Here's what's happening with your CarryBridge account.</div></div>
+        <div class="badge badge-green">✓ KYC Full</div>
+      </div>
+      <!-- Pending alert -->
+      <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:14px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div class="flex"><span style="font-size:24px">⚡</span><div><div style="font-weight:700;color:#92400e;font-size:13px">You have 3 pending actions</div><div style="font-size:12px;color:#78350f">Respond to booking requests and complete your profile for better match scores.</div></div></div>
+        <button class="btn btn-sm" style="background:#d97706;color:#fff;flex-shrink:0">View Actions</button>
+      </div>
+      <!-- Stats -->
+      <div class="summary-cards">
+        <div class="sum-card"><div class="icon">🛡️</div><div class="val">94/100</div><div class="lbl">Trust Score</div><div class="sub">Excellent</div></div>
+        <div class="sum-card"><div class="icon">⭐</div><div class="val">4.8</div><div class="lbl">Rating</div><div class="sub">12 reviews</div></div>
+        <div class="sum-card"><div class="icon">✅</div><div class="val">100%</div><div class="lbl">Completion Rate</div><div class="sub">All deliveries</div></div>
+        <div class="sum-card"><div class="icon">📋</div><div class="val">2</div><div class="lbl">Active Bookings</div><div class="sub">In progress</div></div>
+      </div>
+      <!-- Quick actions -->
+      <div style="margin-bottom:24px">
+        <div style="font-weight:700;font-size:16px;margin-bottom:12px">Quick Actions</div>
+        <div class="grid g4">
+          ${[["✈️","Post a Trip","trips-new"],["📦","Send an Item","send-item"],["🎫","Seek Sponsorship","sponsorship"],["🔍","Find Traveler","find-traveler"]].map(([i,l,p])=>`<div class="card" style="cursor:pointer;text-align:center;padding:16px;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'" onclick="showPage('${p}')"><div style="font-size:28px;margin-bottom:8px">${i}</div><div style="font-size:13px;font-weight:600;color:#374151">${l}</div></div>`).join("")}
+        </div>
+      </div>
+      <div class="grid g3" style="grid-template-columns:2fr 1fr">
+        <!-- Active bookings -->
+        <div class="card">
+          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">Active Bookings <button class="btn btn-ghost btn-sm" onclick="showPage('page-bookings')">View All →</button></div>
+          ${[["📦","Samsung Galaxy S24","London → Dhaka","Jul 15, 2026","Pickup Scheduled","badge-amber","$45"],["✈️","Leather Wallets x3","Dubai → Toronto","Jul 22, 2026","In Transit","badge-blue","$30"]].map(([i,t,r,d,s,sc,f])=>`<div class="booking-item"><div style="width:40px;height:40px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${i}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t}</div><div style="font-size:11px;color:#6b7280">${r} · ${d}</div></div><div style="text-align:right;flex-shrink:0"><span class="badge ${sc}">${s}</span><div style="font-size:12px;font-weight:700;margin-top:3px;color:#111827">${f}</div></div></div>`).join("")}
+        </div>
+        <!-- Messages -->
+        <div class="card">
+          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">Messages <button class="btn btn-ghost btn-sm" onclick="showPage('page-messages')">View All →</button></div>
+          ${[["AR","Arif Rahman","Can you share more photos?","2h ago"],["FM","Fatima Al-M.","I've confirmed the booking.","5h ago"],["EY","Elif Yıldız","Sure, we can negotiate.","1d ago"]].map(([av,n,m,t])=>`<div class="msg-item" onclick="showPage('page-messages')"><div class="avatar" style="width:32px;height:32px;font-size:10px;flex-shrink:0">${av}</div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><span class="msg-sender">${n}</span><span class="msg-time">${t}</span></div><div class="msg-preview">${m}</div></div></div>`).join("")}
+        </div>
+      </div>
+      <!-- KYC Banner -->
+      <div class="card" style="margin-top:16px;background:linear-gradient(135deg,#eff6ff,#f0fdfa);border-color:#bfdbfe">
+        <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div class="flex"><span style="font-size:36px">🔐</span><div><div style="font-weight:700;color:#111827;margin-bottom:4px">Identity Verification — Complete</div><div style="font-size:12px;color:#6b7280">Your KYC is fully approved. You're eligible for all CarryBridge features including escrow and sponsorship.</div></div></div>
+          <div class="flex flex-wrap"><span class="badge badge-green">✓ Email</span><span class="badge badge-green">✓ Phone</span><span class="badge badge-green">✓ ID Approved</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE: MESSAGES ════════════════════ -->
+<div id="page-messages" class="page">
+  <div class="dash-layout">
+    <div class="sidebar" style="top:60px">
+      <div class="sidebar-user"><div class="sidebar-name">Jordan Lee</div><div class="sidebar-meta">✓ Verified · ⭐ 4.8</div></div>
+      ${[["🏠","Dashboard","page-dashboard"],["👤","My Profile","page-profile"],["✈️","My Trips","page-trips"],["📦","My Shipments","page-shipments"],["📋","Bookings","page-bookings"],["💬","Messages","page-messages",3],["💳","Wallet","page-wallet"],["⭐","Reviews","page-reviews"],["🔔","Alerts","page-alerts"],["⚖️","Disputes","page-disputes"],["🔐","Verification","page-verification"]].map(([i,l,p,b])=>`<div class="sidebar-nav-item${p==='page-messages'?' active':''}" onclick="showPage('${p}')"><span>${i}</span><span style="flex:1">${l}</span>${b?`<span style="background:#ef4444;color:#fff;border-radius:999px;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${b}</span>`:''}</div>`).join("")}
+      <div style="padding-top:12px;border-top:1px solid #f3f4f6;margin-top:16px"><div class="sidebar-nav-item" onclick="showPage('home')">← Back to Site</div></div>
+    </div>
+    <div class="dash-main">
+      <div style="font-size:20px;font-weight:800;margin-bottom:16px">Messages</div>
+      <div class="chat-area">
+        <div style="display:flex;height:100%">
+          <!-- Conversation list -->
+          <div style="width:260px;border-right:1px solid #e5e7eb;display:flex;flex-direction:column;flex-shrink:0">
+            <div style="padding:12px;border-bottom:1px solid #f3f4f6"><input class="form-input" placeholder="Search conversations..." style="font-size:12px"></div>
+            <div style="flex:1;overflow-y:auto">
+              ${[["AR","Arif Rahman","🇧🇩","Can you share more photos?","2h ago","Pickup Scheduled",2,true],["FM","Fatima Al-M.","🇦🇪","I've confirmed the booking.","5h ago","In Transit",0,false],["EY","Elif Yıldız","🇹🇷","Sure, we can negotiate.","1d ago","Requested",1,false]].map(([av,n,c,m,t,s,u,active])=>`<div style="padding:12px 14px;border-bottom:1px solid #f3f4f6;cursor:pointer;background:${active?'#eff6ff':'#fff'};border-left:${active?'2px solid #2563eb':'2px solid transparent'}"><div style="display:flex;gap:8px"><div class="avatar" style="width:36px;height:36px;font-size:11px;flex-shrink:0">${av}</div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;font-size:12px;color:#111827">${n} ${c}</span><span style="font-size:10px;color:#9ca3af">${t}</span></div><div style="font-size:11px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">${m}</div><span class="badge badge-gray" style="margin-top:4px;font-size:10px">${s}</span></div>${u>0?`<span style="background:#2563eb;color:#fff;border-radius:999px;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;align-self:flex-start">${u}</span>`:''}</div></div>`).join("")}
+            </div>
+          </div>
+          <!-- Chat area -->
+          <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+            <div class="chat-header">
+              <div class="flex"><div class="avatar" style="width:34px;height:34px;font-size:11px">AR</div><div><div style="font-weight:700;font-size:13px;color:#111827">Arif Rahman 🇧🇩</div><div style="font-size:11px;color:#6b7280">London → Dhaka · July 15 · Booking B-1042</div></div></div>
+              <div class="flex"><span class="badge badge-amber">Pickup Scheduled</span><button class="btn btn-outline btn-sm">📋 View Booking</button></div>
+            </div>
+            <div style="background:#fefce8;border-bottom:1px solid #fde68a;padding:8px 14px;font-size:11px;color:#92400e">🔒 All messages are monitored for safety. Do not share contact details or payment info outside CarryBridge.</div>
+            <div class="chat-messages">
+              <div style="display:flex;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:10px;flex-shrink:0;align-self:flex-end">AR</div><div><div class="msg-bubble msg-other">Hi, I can carry your item on my July 15 flight. Can you share more photos?</div><div style="font-size:10px;color:#9ca3af;margin-top:3px">2:14 PM</div></div></div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end"><div class="msg-bubble msg-me">Sure! I'll upload 4 angle photos right away. The item is fully packed in original box with invoice.</div><div style="font-size:10px;color:#9ca3af;margin-top:3px">2:21 PM</div></div>
+              <div style="display:flex;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:10px;flex-shrink:0;align-self:flex-end">AR</div><div><div class="msg-bubble msg-other">Perfect. I've reviewed the photos. Looks good. Can we agree on £40 for carrying fee?</div><div style="font-size:10px;color:#9ca3af;margin-top:3px">2:45 PM</div></div></div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end"><div class="msg-bubble msg-me">I was thinking £35. Happy to meet in the middle at £37?</div><div style="font-size:10px;color:#9ca3af;margin-top:3px">2:51 PM</div></div>
+              <div style="display:flex;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:10px;flex-shrink:0;align-self:flex-end">AR</div><div><div class="msg-bubble msg-other">Deal at £37. I'll formally accept the booking now.</div><div style="font-size:10px;color:#9ca3af;margin-top:3px">2:58 PM</div></div></div>
+              <div class="msg-system">🤖 <strong>CarryBridge System</strong><br>Booking B-1042 accepted. Sender to place escrow deposit within 24 hours. Next: schedule pickup and item inspection.</div>
+            </div>
+            <!-- Quick actions -->
+            <div style="padding:8px 12px;border-top:1px solid #f3f4f6;display:flex;gap:6px;overflow-x:auto">
+              ${["Make Counter Offer","Accept Booking","Request Item Photos","Schedule Pickup"].map(a=>`<button class="btn btn-ghost btn-sm" style="white-space:nowrap;border-radius:999px;border:1px solid #e5e7eb;font-size:11px">${a}</button>`).join("")}
+            </div>
+            <div class="chat-input">
+              <span style="font-size:18px;cursor:pointer;color:#9ca3af">📎</span>
+              <textarea placeholder="Type a message..." style="flex:1;border:1px solid #d1d5db;border-radius:10px;padding:10px;font-size:13px;resize:none;outline:none;font-family:inherit;height:44px"></textarea>
+              <button class="btn btn-primary btn-sm">Send →</button>
+            </div>
+            <div style="font-size:10px;color:#9ca3af;padding:4px 14px 8px;border-top:1px solid #f9fafb">🌐 Auto-translate available: Arabic, Bangla, Hindi, French, Spanish</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PAGE: ADMIN ════════════════════ -->
+<div id="page-admin" class="page">
+  <div style="background:#111827;color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between">
+    <div class="flex"><div style="width:24px;height:24px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px">🛡️</div><span style="font-weight:700;font-size:16px">CarryBridge Admin</span><span class="badge badge-red" style="margin-left:8px">Admin Mode</span></div>
+    <div class="flex"><span style="font-size:11px;color:#6b7280">Super Admin</span><button class="btn btn-ghost btn-sm" style="color:#9ca3af" onclick="showPage('dashboard')">← Dashboard</button></div>
+  </div>
+  <div style="display:flex">
+    <div class="admin-sidebar">
+      ${[["Overview","overview",true],["KYC Queue","kyc"],["Listings","listings"],["Flagged Items","flagged"],["Disputes","disputes"],["Users","users"],["Country Rules","countries"],["Payments","payments"],["System Logs","logs"]].map(([l,k,a])=>`<button class="admin-nav-item${a?' active':''}" onclick="adminTab('${k}',this)">${k==='kyc'?'🔐 ':k==='flagged'?'🚨 ':k==='disputes'?'⚖️ ':k==='payments'?'💳 ':''}${l}${k==='kyc'?'<span style="float:right;background:#f59e0b;color:#fff;border-radius:999px;padding:0 5px;font-size:10px">143</span>':k==='flagged'?'<span style="float:right;background:#dc2626;color:#fff;border-radius:999px;padding:0 5px;font-size:10px">17</span>':k==='disputes'?'<span style="float:right;background:#dc2626;color:#fff;border-radius:999px;padding:0 5px;font-size:10px">28</span>':''}</button>`).join("")}
+    </div>
+    <div style="flex:1;padding:24px;overflow-y:auto">
+      <div id="admin-overview">
+        <div style="font-size:22px;font-weight:800;margin-bottom:6px">Admin Overview</div>
+        <div style="color:#6b7280;font-size:13px;margin-bottom:20px">Real-time platform health and compliance dashboard</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px">
+          ${[["👥","52,847","Total Users","+284 today",false],["🔐","143","KYC Pending","Needs review",true],["📋","3,291","Active Listings","Trips + Shipments",false],["⚖️","28","Open Disputes","Avg 24h resolution",true],["💳","$184,200","Escrow Held","Total in escrow",false],["🚨","17","Flagged Items","Pending review",true],["💰","$4,280","Today Revenue","Platform fees",false],["✅","97.8%","Completion Rate","All-time",false]].map(([i,v,l,s,u])=>`<div class="card${u?' border-red-200':''}" style="padding:14px;${u?'border-color:#fecaca':''}"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:22px">${i}</span>${u?'<span class="badge badge-red" style="font-size:10px">Action Needed</span>':''}</div><div style="font-size:20px;font-weight:700;color:#111827">${v}</div><div style="font-size:11px;color:#6b7280;margin-top:2px">${l}</div><div style="font-size:11px;color:#3b82f6;font-weight:600;margin-top:3px">${s}</div></div>`).join("")}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <!-- KYC -->
+          <div class="card" style="border-color:#fde68a">
+            <div class="card-header" style="background:#fefce8;color:#92400e">🔐 KYC Queue <span class="badge badge-amber" style="margin-left:6px">4 pending</span></div>
+            ${[["Md. Karim","🇧🇩","Passport","2h ago"],["Ana Rodrigues","🇧🇷","National ID","3h ago"],["NovaTrade LLC","🇦🇪","Business ID","8h ago","high"]].map(([n,c,d,t,r])=>`<div style="padding:10px 14px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:12px;font-weight:600;color:#111827">${n} ${c}</div><div style="font-size:11px;color:#6b7280">${d} · ${t}</div></div><div style="display:flex;gap:4px"><button style="font-size:11px;background:#dcfce7;color:#15803d;border:none;border-radius:4px;padding:2px 6px;cursor:pointer">✓</button><button style="font-size:11px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;padding:2px 6px;cursor:pointer">✗</button></div></div>`).join("")}
+          </div>
+          <!-- Flagged -->
+          <div class="card" style="border-color:#fecaca">
+            <div class="card-header" style="background:#fff5f5;color:#dc2626">🚨 Flagged Listings <span class="badge badge-red" style="margin-left:6px">3</span></div>
+            ${[["iPhone 15 Pro × 8 units","Commercial qty electronics"],["Prescription Medication (Unlabeled)","Unlabeled medicine"],["Cash Carrier — Dubai to London","Suspicious description"]].map(([t,f])=>`<div style="padding:10px 14px;border-bottom:1px solid #f3f4f6"><div style="font-size:12px;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t}</div><div style="font-size:11px;color:#dc2626">${f}</div><div style="display:flex;gap:4px;margin-top:5px"><button style="font-size:10px;background:#dbeafe;color:#1d4ed8;border:none;border-radius:4px;padding:2px 6px;cursor:pointer">Review</button><button style="font-size:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;padding:2px 6px;cursor:pointer">Remove</button></div></div>`).join("")}
+          </div>
+          <!-- Disputes -->
+          <div class="card" style="border-color:#fde68a">
+            <div class="card-header" style="background:#fefce8;color:#92400e">⚖️ Open Disputes <span class="badge badge-amber" style="margin-left:6px">2 open</span></div>
+            ${[["D-501","Non-delivery","Carlos M. vs Traveler X","open","badge-red",2],["D-500","Item damage","Priya N. vs Sender Y","under review","badge-amber",1],["D-499","Payment dispute","Elif Y. vs Platform","resolved","badge-green",3]].map(([i,t,p,s,c,d])=>`<div style="padding:10px 14px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:12px;font-weight:600;color:#111827">${i} — ${t}</div><div style="font-size:11px;color:#6b7280">${p} · ${d}d open</div></div><span class="badge ${c}" style="font-size:10px;flex-shrink:0">${s}</span></div>`).join("")}
+          </div>
+        </div>
+      </div>
+      <div id="admin-kyc" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:20px;font-weight:700">KYC Review Queue</div><div style="display:flex;gap:10px"><input class="form-input" placeholder="Search by name or ID..." style="width:220px"><select class="form-select" style="width:140px"><option>All Risk Levels</option><option>Low</option><option>Medium</option><option>High</option></select></div></div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>User ID</th><th>Name</th><th>Country</th><th>Doc Type</th><th>Submitted</th><th>Risk</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${[["u-1042","Md. Karim","🇧🇩","Passport","2h ago","low","pending"],["u-1041","Ana Rodrigues","🇧🇷","National ID","3h ago","low","pending"],["u-1040","Yusuf Hassan","🇸🇴","Passport","5h ago","medium","under review"],["u-1039","NovaTrade LLC","🇦🇪","Business ID","8h ago","high","pending"],["u-1038","Maria Santos","🇵🇭","National ID","12h ago","low","approved"]].map(([id,n,c,d,t,r,s])=>`<tr><td>${id}</td><td style="font-weight:600">${n}</td><td>${c}</td><td>${d}</td><td>${t}</td><td><span class="badge ${r==='high'?'badge-red':r==='medium'?'badge-amber':'badge-green'}">${r}</span></td><td><span class="badge ${s==='approved'?'badge-green':s==='under review'?'badge-amber':'badge-gray'}">${s}</span></td><td><div style="display:flex;gap:4px"><button style="font-size:10px;background:#dbeafe;color:#1d4ed8;border:none;border-radius:4px;padding:3px 7px;cursor:pointer">Review</button><button style="font-size:10px;background:#dcfce7;color:#15803d;border:none;border-radius:4px;padding:3px 7px;cursor:pointer">Approve</button><button style="font-size:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;padding:3px 7px;cursor:pointer">Reject</button></div></td></tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="admin-countries" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:20px;font-weight:700">Country Rules Manager</div><button class="btn btn-primary btn-sm">+ Add Country</button></div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>Country</th><th>Code</th><th>Duty Threshold</th><th>Strict Food</th><th>Strict Medicine</th><th>Last Updated</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${[["Australia","AU","AUD 1,000",true,true,"2026-05-01"],["Bangladesh","BD","BDT 10,000",false,false,"2026-04-15"],["Canada","CA","CAD 800",false,false,"2026-03-20"],["UAE","AE","AED 3,000",false,true,"2026-05-10"],["United Kingdom","GB","GBP 390",false,false,"2026-04-01"],["United States","US","USD 800",false,false,"2026-05-15"],["India","IN","INR 50,000",false,false,"2026-04-20"]].map(([n,c,t,f,m,u])=>`<tr><td style="font-weight:600">${n}</td><td>${c}</td><td>${t}</td><td>${f?'<span class="badge badge-red">Strict</span>':'<span style="color:#9ca3af;font-size:12px">Normal</span>'}</td><td>${m?'<span class="badge badge-red">Strict</span>':'<span style="color:#9ca3af;font-size:12px">Normal</span>'}</td><td style="color:#6b7280">${u}</td><td><div style="display:flex;gap:4px"><button style="font-size:10px;background:#dbeafe;color:#1d4ed8;border:none;border-radius:4px;padding:3px 7px;cursor:pointer">Edit</button><button style="font-size:10px;background:#f3f4f6;color:#374151;border:none;border-radius:4px;padding:3px 7px;cursor:pointer">View</button></div></td></tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      ${["kyc","flagged","disputes","listings","users","payments","logs"].filter(k=>k!=="kyc"&&k!=="countries").map(k=>`<div id="admin-${k}" style="display:none"><div style="text-align:center;padding:48px"><div style="font-size:48px;margin-bottom:12px">🛠️</div><div style="font-size:20px;font-weight:700;color:#111827;margin-bottom:8px">${k.charAt(0).toUpperCase()+k.slice(1)}</div><p style="color:#6b7280;margin-bottom:16px">This admin section is structurally defined. Connect to Supabase backend to populate with real data.</p><div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px;max-width:480px;margin:0 auto;font-size:12px;color:#1d4ed8">Database schema is defined in <code style="background:#dbeafe;padding:1px 4px;border-radius:3px">db-schema.sql</code>. All entities, RLS policies, and admin_logs table are ready for integration.</div></div></div>`).join("")}
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ OTHER SIMPLE PAGES ════════════════════ -->
+<div id="page-login" class="page">
+  <div style="min-height:calc(100vh - 60px);background:linear-gradient(135deg,#eff6ff,#f0fdfa);display:flex;align-items:center;justify-content:center;padding:24px">
+    <div style="width:100%;max-width:420px">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#2563eb,#0d9488);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px">✈</div>
+        <div style="font-size:22px;font-weight:800;color:#111827">Welcome back</div>
+        <div style="color:#6b7280;font-size:13px">Sign in to your CarryBridge account</div>
+      </div>
+      <div class="card"><div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="you@example.com"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="••••••••"><div style="text-align:right;margin-top:4px"><span style="font-size:11px;color:#2563eb;cursor:pointer">Forgot password?</span></div></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showPage('dashboard')">Sign In</button>
+        <div style="text-align:center;position:relative"><div style="position:absolute;top:50%;left:0;right:0;height:1px;background:#e5e7eb"></div><span style="background:#fff;padding:0 12px;font-size:11px;color:#6b7280;position:relative">or continue with</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="btn btn-ghost" style="justify-content:center;font-size:12px">G Google</button>
+          <button class="btn btn-ghost" style="justify-content:center;font-size:12px">f Facebook</button>
+        </div>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px;font-size:11px;color:#1d4ed8">🔐 All accounts require phone and email verification. KYC is required before booking.</div>
+      </div></div>
+      <div style="text-align:center;font-size:13px;color:#6b7280;margin-top:16px">Don't have an account? <span style="color:#2563eb;font-weight:600;cursor:pointer" onclick="showPage('signup')">Create one free →</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-signup" class="page">
+  <div style="min-height:calc(100vh - 60px);background:linear-gradient(135deg,#eff6ff,#f0fdfa);display:flex;align-items:center;justify-content:center;padding:24px">
+    <div style="width:100%;max-width:520px">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#2563eb,#0d9488);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px">✈</div>
+        <div style="font-size:22px;font-weight:800;color:#111827">Create your account</div>
+        <div style="color:#6b7280;font-size:13px">Join 50,000+ verified CarryBridge users</div>
+      </div>
+      <div class="card"><div class="card-header">Step 1: How will you use CarryBridge?</div><div class="card-body">
+        <div class="grid g2" style="margin-bottom:16px">
+          ${[["📦","Sender / Shipper","I want to send items internationally through travelers.",true],["✈️","Traveler / Carrier","I travel internationally and have luggage space to monetize.",false],["🔄","Both","I sometimes send items and sometimes travel.",false],["💼","Sponsor","I want to fund traveler tickets for cargo capacity.",false]].map(([i,t,d,s])=>`<div style="padding:14px;border-radius:10px;border:2px solid ${s?'#2563eb':'#e5e7eb'};background:${s?'#eff6ff':'#fff'};cursor:pointer"><div style="font-size:22px;margin-bottom:6px">${i}</div><div style="font-weight:700;font-size:12px;color:#111827">${t}</div><div style="font-size:11px;color:#6b7280;margin-top:3px">${d}</div></div>`).join("")}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="input-group"><div class="form-group" style="margin-bottom:0"><label class="form-label">Full Legal Name *</label><input class="form-input" placeholder="As it appears on your ID"></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Email Address *</label><input type="email" class="form-input" placeholder="you@example.com"></div></div>
+          <div class="input-group"><div class="form-group" style="margin-bottom:0"><label class="form-label">Phone Number *</label><input type="tel" class="form-input" placeholder="+44 7911 123456"></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Country *</label><select class="form-select"><option>Select country</option><option>🇬🇧 United Kingdom</option><option>🇧🇩 Bangladesh</option><option>🇦🇪 UAE</option><option>🇮🇳 India</option><option>🇺🇸 USA</option></select></div></div>
+          <div class="input-group"><div class="form-group" style="margin-bottom:0"><label class="form-label">Password *</label><input type="password" class="form-input" placeholder="Min. 8 characters"></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Confirm Password *</label><input type="password" class="form-input" placeholder="Repeat your password"></div></div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label class="check-group"><input type="checkbox"> I agree to the CarryBridge <span style="color:#2563eb">Terms of Service</span> and <span style="color:#2563eb">Privacy Policy</span></label>
+            <label class="check-group"><input type="checkbox"> I confirm I am 18 years of age or older</label>
+            <label class="check-group"><input type="checkbox"> I understand I must never carry sealed, unknown, or prohibited items</label>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showPage('dashboard')">Create Account →</button>
+        </div>
+      </div></div>
+      <div style="text-align:center;font-size:13px;color:#6b7280;margin-top:16px">Already have an account? <span style="color:#2563eb;font-weight:600;cursor:pointer" onclick="showPage('login')">Sign in →</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-how-it-works" class="page">
+  <div style="background:linear-gradient(135deg,#1e40af,#0d9488);color:#fff;padding:40px;text-align:center">
+    <div style="font-size:28px;font-weight:800;margin-bottom:8px">How CarryBridge Works</div>
+    <div style="color:rgba(255,255,255,.8);font-size:14px">Structured. Safe. Simple. Every transaction follows a compliance-first workflow.</div>
+  </div>
+  <div style="max-width:1100px;margin:32px auto;padding:0 24px">
+    ${[["📦 Flow 1: Sender Sends an Item","blue",["Create & verify account (phone + email + KYC)","Post shipment with photos, invoice, declared value","View matched travelers on your route","Send booking request and negotiate fee","Pay escrow deposit — funds held securely","Traveler inspects items at pickup (mandatory)","Track item in transit","Recipient confirms via OTP/QR code","Escrow released → leave review"]],["✈️ Flow 2: Traveler Posts Space","teal",["Create and verify account","Post trip: route, date, free kg, accepted categories","Optionally indicate open to ticket sponsorship","Receive and review booking requests","Inspect all items at pickup (photos required)","Travel and update status","Deliver and get OTP confirmation","Receive payout from escrow","Leave review for sender"]],["🎫 Flow 3: Sponsored Traveler","amber",["Post desired route, date range, cargo capacity","Sponsors review your KYC and ratings","Match and agree on cargo terms","Ticket funded via escrow milestone","Open cargo inspection is mandatory","Check-in confirmation uploaded","In-transit and delivery milestones","All milestones completed → remaining payment released"]]].map(([t,c,s])=>`<div style="margin-bottom:32px"><div style="font-size:18px;font-weight:700;color:#111827;margin-bottom:14px">${t}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${s.map((step,i)=>`<div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px;display:flex;gap:10px"><div style="width:24px;height:24px;border-radius:50%;background:#2563eb;color:#fff;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div><div style="font-size:12px;color:#374151;line-height:1.5">${step}</div></div>`).join("")}</div></div>`).join("")}
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:24px">
+      <div style="font-weight:700;color:#111827;margin-bottom:12px">📋 Booking Status Flow</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">${["Draft","Active","Matched","Requested","Accepted","Escrow Pending","Pickup Scheduled","Picked Up","In Transit","Arrived","Delivered","Completed","Disputed","Cancelled"].map(s=>`<span style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:500">${s}</span>`).join("")}</div>
+    </div>
+  </div>
+</div>
+
+<div id="page-safety" class="page">
+  <div style="background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff;padding:40px">
+    <div style="font-size:28px;font-weight:800;margin-bottom:8px">🛡️ Trust & Safety Center</div>
+    <div style="color:rgba(255,255,255,.8);font-size:14px;max-width:600px">Our platform is built on a foundation of legal compliance, identity verification, and mutual trust.</div>
+  </div>
+  <div style="max-width:1000px;margin:32px auto;padding:0 24px">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">📋 The 10 CarryBridge Safety Commandments</div>
+      <div class="card-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${[["Never carry a sealed, unknown package","Open and inspect every item. If you cannot see the contents, do not carry it."],["Always request invoice for high-value items","Phones, electronics, jewelry, and items over $200 must have invoice/receipt."],["Photograph items from all angles before pickup","This protects you legally and ensures accountability on both sides."],["Never share your OTP with the sender","The delivery OTP is for the recipient only."],["Check country rules before accepting cargo","Know what's allowed in both origin and destination countries."],["Report any pressure to carry undeclared items","If a sender pressures you to not declare an item, report immediately."],["Only communicate and pay through CarryBridge","Off-platform deals are unprotected by escrow, disputes, and reviews."],["Declare everything at customs honestly","CarryBridge cannot protect you from customs decisions. Declare accurately."],["Never accept cash before delivery","All payment goes through escrow only."],["Trust your instincts — decline if something feels wrong","You can decline any booking at any time before pickup."]].map(([r,d],i)=>`<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;display:flex;gap:10px"><div style="width:28px;height:28px;background:#dc2626;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${i+1}</div><div><div style="font-weight:700;font-size:12px;color:#111827;margin-bottom:2px">${r}</div><div style="font-size:11px;color:#6b7280">${d}</div></div></div>`).join("")}</div></div>
+    </div>
+    <div style="background:#111827;border-radius:12px;padding:24px;color:#e5e7eb">
+      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:12px">🚫 Absolutely Prohibited Items</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">${["🚫 Drugs, narcotics, or controlled substances","💣 Weapons, explosives, or hazardous materials","📦 Unknown or sealed packages (zero exceptions)","💊 Illegal or undeclared prescription medicines","🏷️ Counterfeit or pirated goods of any kind","💰 Undeclared cash over country limits","🥇 Undeclared gold bullion or precious metals","🐾 Live animals without proper documentation","🔞 Pornographic or prohibited content","🔫 Offensive weapons or replica weapons"].map(i=>`<div style="background:rgba(255,255,255,.05);border-radius:6px;padding:8px;color:#e5e7eb">${i}</div>`).join("")}</div>
+    </div>
+  </div>
+</div>
+
+<div id="page-country-rules" class="page">
+  <div style="background:linear-gradient(135deg,#064e3b,#0d9488);color:#fff;padding:40px">
+    <div style="font-size:28px;font-weight:800;margin-bottom:8px">🌍 Country Rules & Customs Guide</div>
+    <div style="color:rgba(255,255,255,.8);font-size:14px;max-width:600px">Country-specific customs rules for hand-carry items. Electronics, food, medicine, batteries, and more.</div>
+    <div style="background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:10px;max-width:600px;margin-top:12px;font-size:12px;color:#fcd34d">⚠️ Advisory Only: Always verify with official government sources. CarryBridge is not liable for customs decisions.</div>
+  </div>
+  <div style="max-width:1200px;margin:24px auto;padding:0 24px;display:grid;grid-template-columns:260px 1fr;gap:24px">
+    <div>
+      ${[["AU","🇦🇺","Australia","AUD 1,000"],["BD","🇧🇩","Bangladesh","BDT 10,000"],["CA","🇨🇦","Canada","CAD 800"],["AE","🇦🇪","UAE","AED 3,000"],["GB","🇬🇧","United Kingdom","GBP 390"],["US","🇺🇸","United States","USD 800"],["IN","🇮🇳","India","INR 50,000"],["TR","🇹🇷","Turkey","TRY 1,500"],["MY","🇲🇾","Malaysia","MYR 500"],["QA","🇶🇦","Qatar","QAR 3,000"]].map(([c,f,n,t])=>`<div class="country-card" style="margin-bottom:6px" onclick="selectCountry('${c}',this)"><span style="font-size:24px">${f}</span><div><div style="font-weight:600;font-size:13px;color:#111827">${n}</div><div style="font-size:11px;color:#6b7280">Threshold: ${t}</div></div></div>`).join("")}
+    </div>
+    <div id="country-detail-panel">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:48px;text-align:center">
+        <div style="font-size:48px;margin-bottom:12px">🌍</div>
+        <div style="font-size:16px;font-weight:600;color:#111827;margin-bottom:6px">Select a Country</div>
+        <div style="font-size:13px;color:#6b7280">Choose a country from the list to view customs rules and category-specific guidance.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-pricing" class="page">
+  <div style="background:linear-gradient(135deg,#1e40af,#0d9488);color:#fff;padding:48px;text-align:center">
+    <div style="font-size:28px;font-weight:800;margin-bottom:8px">Simple, Fair Platform Fees</div>
+    <div style="color:rgba(255,255,255,.8);font-size:14px">Free to join. We only earn when you complete a successful delivery.</div>
+  </div>
+  <div style="max-width:900px;margin:32px auto;padding:0 24px">
+    <div class="grid g3" style="margin-bottom:32px">
+      ${[["📦","Sender","0%","Free to post shipment requests",["Free account","Free listing","Pay only the agreed carrying fee","Escrow service included","Dispute support included"],false],["✈️","Traveler","10–12%","Small platform fee on successful delivery",["Free to post trips","Free KYC verification","10% on standard deliveries","12% on high-value (>$500)","Escrow + payout included","Priority matching for verified users"],true],["💼","Sponsor","8%","On successful sponsorship completion",["Free to post offers","8% on ticket amount funded","Escrow milestone service","KYC verification of travelers","Admin oversight of milestones"],false]].map(([i,t,f,d,items,featured])=>`<div class="card" style="${featured?'border-color:#2563eb;box-shadow:0 0 0 2px #2563eb;':''}" ><div class="card-body">${featured?'<div style="text-align:center;margin-bottom:12px"><span class="badge badge-blue">Most Popular</span></div>':''}<div style="font-size:30px;margin-bottom:8px">${i}</div><div style="font-size:18px;font-weight:700;color:#111827">${t}</div><div style="margin:10px 0"><span style="font-size:32px;font-weight:800;color:#2563eb">${f}</span><span style="color:#6b7280;font-size:13px;margin-left:6px">platform fee</span></div><div style="font-size:12px;color:#6b7280;margin-bottom:14px">${d}</div><div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">${items.map(item=>`<div style="font-size:12px;color:#374151;display:flex;gap:6px"><span style="color:#16a34a;flex-shrink:0">✓</span>${item}</div>`).join("")}</div><button class="btn ${featured?'btn-primary':'btn-outline'}" style="width:100%;justify-content:center">Get Started →</button></div></div>`).join("")}
+    </div>
+    <div class="card">
+      <div class="card-header">Fee Calculation Examples</div>
+      <div class="card-body" style="padding:0">
+        <table class="table">
+          <thead><tr><th>Scenario</th><th>Agreed Fee</th><th>Platform Fee</th><th>Traveler Gets</th></tr></thead>
+          <tbody>
+            ${[["Light item (documents)","$20","$2 (10%)","$18"],["Phone carry (Dhaka-London)","$45","$4.50 (10%)","$40.50"],["Clothing bundle 5kg","$60","$6 (10%)","$54"],["High-value electronics","$120","$14.40 (12%)","$105.60"],["Sponsorship: $900 ticket","$900 ticket","$72 (8%)","Full ticket funded"]].map(([s,f,p,g])=>`<tr><td>${s}</td><td style="color:#374151">${f}</td><td style="color:#dc2626">${p}</td><td style="font-weight:700;color:#16a34a">${g}</td></tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Placeholder pages -->
+${["page-trips","page-shipments","page-bookings","page-wallet","page-reviews","page-alerts","page-disputes","page-verification","page-profile","page-prohibited","page-trips-new"].map(p=>`<div id="${p}" class="page"><div class="dash-layout"><div class="sidebar" style="top:60px">${[["🏠","Dashboard","page-dashboard"],["👤","My Profile","page-profile"],["✈️","My Trips","page-trips"],["📦","My Shipments","page-shipments"],["📋","Bookings","page-bookings"],["💬","Messages","page-messages"],["💳","Wallet","page-wallet"],["⭐","Reviews","page-reviews"],["🔔","Alerts","page-alerts"],["⚖️","Disputes","page-disputes"],["🔐","Verification","page-verification"]].map(([i,l,pg])=>`<div class="sidebar-nav-item${pg===p?' active':''}" onclick="showPage('${pg}')"><span>${i}</span><span>${l}</span></div>`).join("")}<div style="padding-top:12px;border-top:1px solid #f3f4f6;margin-top:16px"><div class="sidebar-nav-item" onclick="showPage('home')">← Back to Site</div></div></div><div class="dash-main"><div style="text-align:center;padding:48px"><div style="font-size:48px;margin-bottom:12px">${p.includes('trips')&&!p.includes('new')?'✈️':p.includes('shipment')?'📦':p.includes('booking')?'📋':p.includes('wallet')?'💳':p.includes('review')?'⭐':p.includes('alert')?'🔔':p.includes('dispute')?'⚖️':p.includes('verif')?'🔐':p.includes('profile')?'👤':p.includes('prohibit')?'🚫':'➕'}</div><div style="font-size:20px;font-weight:700;color:#111827;margin-bottom:8px">${p.replace('page-','').replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase())}</div><p style="color:#6b7280;margin-bottom:20px">This page is fully built in the Next.js application (src/app/). Run the dev server to see the interactive version.</p><button class="btn btn-primary" onclick="showPage('dashboard')">← Back to Dashboard</button></div></div></div></div>`).join("")}
+
+<script>
+const TRIPS = [
+  {id:"t1",name:"Arif Rahman",av:"AR",rating:4.9,rev:47,from:"Dhaka",fc:"DAC·BD",to:"London",tc:"LHR·UK",date:"Jul 15, 2026",kg:15,min:20,max:80,cats:["Electronics","Clothing","Documents"],sponsor:false,verified:true,kyc:"full"},
+  {id:"t2",name:"Fatima Al-Mansouri",av:"FA",rating:4.8,rev:32,from:"Dubai",fc:"DXB·AE",to:"Toronto",tc:"YYZ·CA",date:"Jul 22, 2026",kg:20,min:50,max:50,cats:["Clothing","Jewelry","Cosmetics"],sponsor:true,verified:true,kyc:"full"},
+  {id:"t3",name:"Raj Sharma",av:"RS",rating:4.7,rev:19,from:"Delhi",fc:"DEL·IN",to:"Sydney",tc:"SYD·AU",date:"Aug 3, 2026",kg:10,min:30,max:60,cats:["Clothing","Documents"],sponsor:false,verified:true,kyc:"basic"},
+  {id:"t4",name:"Elif Yıldız",av:"EY",rating:5.0,rev:63,from:"Istanbul",fc:"IST·TR",to:"New York",tc:"JFK·US",date:"Jul 30, 2026",kg:25,min:40,max:120,cats:["Clothing","Electronics","Ceramics"],sponsor:false,verified:true,kyc:"full"},
+  {id:"t5",name:"Ahmad Zulkifli",av:"AZ",rating:4.6,rev:12,from:"Kuala Lumpur",fc:"KUL·MY",to:"Doha",tc:"DOH·QA",date:"Jul 18, 2026",kg:12,min:25,max:70,cats:["Clothing","Electronics"],sponsor:true,verified:true,kyc:"basic"},
+  {id:"t6",name:"Sophie Martin",av:"SM",rating:4.9,rev:28,from:"Paris",fc:"CDG·FR",to:"Dhaka",tc:"DAC·BD",date:"Aug 10, 2026",kg:18,min:60,max:60,cats:["Clothing","Cosmetics","Books"],sponsor:false,verified:true,kyc:"full"},
+];
+const SHIPMENTS = [
+  {id:"s1",name:"Tanvir Hossain",av:"TH",rating:4.8,cat:"Electronics",title:"Samsung Galaxy S24 (1 unit, personal use)",kg:0.5,val:850,from:"London",to:"Dhaka",offer:45,risk:true,inv:true,photos:4},
+  {id:"s2",name:"Priya Nair",av:"PN",rating:4.7,cat:"Medicine / Health",title:"Herbal Ayurvedic Medicines (sealed, labeled)",kg:2.0,val:120,from:"Dubai",to:"Delhi",offer:30,risk:false,inv:true,photos:6},
+  {id:"s3",name:"Carlos Mendez",av:"CM",rating:4.9,cat:"Clothing & Fashion",title:"Handmade Leather Goods (3 wallets)",kg:0.8,val:180,from:"Toronto",to:"Mexico City",offer:25,risk:false,inv:true,photos:3},
+];
+const SPONSORS = [
+  {id:"sp1",type:"request",name:"Md. Karim",av:"MK",from:"Dhaka",to:"London",dates:"Jul 20–Aug 5, 2026",kg:20,budget:850,desc:"Experienced carrier, 8 successful deliveries. Can carry up to 20kg of legal declared items.",cats:["Clothing","Electronics","Documents"]},
+  {id:"sp2",type:"offer",name:"NovaTech Imports",av:"NT",from:"Dubai",to:"Toronto",dates:"Jul 25–Aug 10, 2026",kg:15,budget:1200,desc:"Looking for a verified traveler to carry legally declared electronics. Full economy ticket covered.",cats:["Electronics"]},
+  {id:"sp3",type:"request",name:"Aisha Kamara",av:"AK",from:"Freetown",to:"London",dates:"Aug 1–15, 2026",kg:15,budget:780,desc:"Professional courier with strong references. Open to full or partial sponsorship for legal cargo.",cats:["Clothing","Documents","Jewelry"]},
+];
+const COUNTRY_DATA = {
+  AU:{name:"Australia",flag:"🇦🇺",threshold:"AUD 1,000",electronics:"Duty-free up to AUD 1,000 personal imports. ACMA compliance for wireless devices.",food:"⚠️ STRICT: Most fresh food, seeds, plant material prohibited. Declare ALL food. Biosecurity fines up to AUD 525,000.",medicine:"Personal use quantity only. Prescription must accompany controlled substances.",phones:"Up to 2 phones personal use. Commercial quantities trigger duty and GST.",batteries:"Lithium batteries must meet IATA standards. Loose batteries in carry-on only.",notes:"Australia has among the world's strictest biosecurity laws. When in doubt, declare.",restricted:["Fresh produce","Seeds","Live animals","Soil","Untreated wood"],strictFood:true,strictMed:true},
+  BD:{name:"Bangladesh",flag:"🇧🇩",threshold:"BDT 10,000",electronics:"Duty-free for 1 laptop + 1 phone for personal use. Additional phones attract 25–37.5% duty.",food:"Commercially packed food generally allowed. Meat products require halal certification.",medicine:"Personal use quantity allowed. Original packaging preferred.",phones:"1 personal-use phone duty-free. 2nd phone onwards: duty + VAT applies (~25–37.5%). IMEI registration required.",batteries:"Standard IATA rules apply.",notes:"Gift allowance: up to BDT 10,000 duty-free. Declare all electronics at Dhaka customs.",restricted:["Narcotics","Pornographic material","Counterfeit goods"],strictFood:false,strictMed:false},
+  CA:{name:"Canada",flag:"🇨🇦",threshold:"CAD 800",electronics:"Electronics generally allowed for personal use. Duty may apply on commercial quantities.",food:"Most commercially packaged food allowed. Fresh fruits/vegetables from some countries restricted.",medicine:"90-day supply for personal use. Controlled substances need prescription.",phones:"Personal use phones generally duty-free. Commercial import needs broker.",batteries:"IATA lithium battery rules apply. Airlines may restrict quantity.",notes:"CBSA requires declaration of all goods over CAD 800. Gift exemption CAD 60.",restricted:["Firearms (without permit)","Endangered species","Hate propaganda"],strictFood:false,strictMed:false},
+  AE:{name:"UAE",flag:"🇦🇪",threshold:"AED 3,000",electronics:"Generally liberal. Commercial quantities need trade license.",food:"Pork products restricted. Halal certification needed for meat.",medicine:"⚠️ Strict: Many prescription drugs illegal. Check MOH list before carrying ANY medication.",phones:"Personal use liberal. Bulk quantities need customs declaration.",batteries:"IATA standards apply. DGCA regulations for aviation.",notes:"Some medications legal elsewhere are ILLEGAL in UAE. Always verify at uae.gov.ae. Penalties severe.",restricted:["Pork (publicly displayed)","Alcohol (non-personal)","Certain medications","Gambling items"],strictFood:false,strictMed:true},
+  GB:{name:"United Kingdom",flag:"🇬🇧",threshold:"GBP 390",electronics:"Duty-free for personal use up to £390. VAT + customs above threshold.",food:"Post-Brexit: meat and dairy from non-GB origins restricted. Commercial quantities need health certificate.",medicine:"3-month personal supply. Controlled drugs need Home Office licence.",phones:"1-2 phones personal use typically cleared. HMRC monitors commercial volumes.",batteries:"Lithium batteries: IATA rules. Power banks carry-on only.",notes:"Post-Brexit rules apply. HMRC Random Inspection Channel (Red/Green/Nothing to Declare).",restricted:["Offensive weapons","Endangered species","Counterfeit goods","Ivory"],strictFood:false,strictMed:false},
+  US:{name:"United States",flag:"🇺🇸",threshold:"USD 800",electronics:"Generally liberal. FCC certification required for wireless devices.",food:"Fresh produce restrictions. USDA regulates meat, dairy, fruits, vegetables.",medicine:"FDA personal use policy: 90-day supply. Must be for personal use.",phones:"Unlocked phones fine. Commercial imports may need FCC ID.",batteries:"FAA/DOT rules: lithium ion max 100Wh per battery in carry-on.",notes:"CBP duty-free exemption: $800 per person. Gifts up to $100. Declare cash over $10,000.",restricted:["Cuban cigars (over limit)","Products of forced labor","Endangered species","Certain medications"],strictFood:false,strictMed:false},
+  IN:{name:"India",flag:"🇮🇳",threshold:"INR 50,000",electronics:"Duty-free one laptop. Additional electronics: 15–28% BCD + GST.",food:"Commercially sealed generally okay. Meat, seafood restrictions apply.",medicine:"Personal use quantity. Ayurvedic/herbal allowed. Controlled substances need permit.",phones:"1 phone duty-free with up to INR 50,000 total goods. Additional: 15–20% duty.",batteries:"DGCA lithium rules. Airlines restrict loose lithium cells.",notes:"Indian Customs: Baggage Rules 2016. Residents returning: INR 50,000 duty-free.",restricted:["Satellite phones (without permission)","Drones (without DGCA approval)","Counterfeit goods"],strictFood:false,strictMed:false},
+};
+
+function makeTripCard(t){
+  return `<div class="trip-card"><div style="display:flex;align-items:start;justify-content:space-between;margin-bottom:12px"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${t.av}</div><div><div style="font-weight:700;font-size:13px;color:#111827">${t.name}</div><div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap"><span class="badge badge-green" style="font-size:10px">✓ Verified</span>${t.kyc==='full'?'<span class="badge badge-blue" style="font-size:10px">🔐 KYC Full</span>':''}<span style="font-size:11px;color:#6b7280">⭐ ${t.rating} (${t.rev})</span></div></div></div>${t.sponsor?'<span class="badge badge-amber" style="font-size:10px">🎫 Sponsorship</span>':''}</div><div class="route-box"><div><div class="route-city">${t.from}</div><div class="route-code">${t.fc}</div></div><div><svg style="width:20px;height:20px;color:#3b82f6;margin:0 4px" fill="none" stroke="#3b82f6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg><div class="route-date">${t.date}</div></div><div><div class="route-city">${t.to}</div><div class="route-code">${t.tc}</div></div></div><div class="stats-2"><div class="stat-box blue"><div class="lbl">Free Space</div><div class="val">${t.kg} kg</div></div><div class="stat-box teal"><div class="lbl">Carrying Fee</div><div class="val">$${t.min}${t.min!==t.max?'–$'+t.max:''}</div></div></div><div style="margin-bottom:10px"><div style="font-size:11px;color:#6b7280;margin-bottom:4px">Accepted Items</div><div class="tags">${t.cats.slice(0,3).map(c=>`<span class="tag">${c}</span>`).join('')}${t.cats.length>3?`<span style="font-size:11px;color:#9ca3af">+${t.cats.length-3} more</span>`:''}</div></div><div class="safety-notice">🔍 This traveler will inspect all items before accepting. Full declaration required.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px"><button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="showPage('dashboard')">View Trip</button><button class="btn btn-outline btn-sm" style="width:100%;justify-content:center">Request</button></div></div>`;
+}
+function makeShipmentCard(s){
+  return `<div class="trip-card"><div style="display:flex;align-items:start;gap:10px;margin-bottom:12px"><div class="avatar" style="background:linear-gradient(135deg,#14b8a6,#60a5fa)">${s.av}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.title}</div><div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap"><span class="badge badge-blue" style="font-size:10px">${s.cat}</span>${s.risk?'<span class="badge badge-red" style="font-size:10px">⚠️ High Value</span>':''}</div></div></div><div class="route-box"><div><div class="route-city">${s.from}</div></div><svg style="width:18px;height:18px" fill="none" stroke="#0d9488" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg><div><div class="route-city">${s.to}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:10px 0"><div class="stat-box blue"><div class="lbl">Weight</div><div class="val">${s.kg}kg</div></div><div class="stat-box blue"><div class="lbl">Declared</div><div class="val">$${s.val}</div></div><div class="stat-box teal"><div class="lbl">Offer</div><div class="val">$${s.offer}</div></div></div><div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">${s.inv?'<span style="background:#dcfce7;color:#15803d;border-radius:999px;padding:2px 8px;font-size:11px">✓ Invoice</span>':''}<span style="background:#dcfce7;color:#15803d;border-radius:999px;padding:2px 8px;font-size:11px">📷 ${s.photos} Photos</span></div>${s.risk?'<div class="warning-box">⚠️ High-value item — traveler should verify invoice and inspect thoroughly.</div>':''}<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><button class="btn btn-primary btn-sm" style="width:100%;justify-content:center">View Details</button><button class="btn btn-outline btn-sm" style="width:100%;justify-content:center">Offer to Carry</button></div></div>`;
+}
+function makeSponsorCard(s){
+  const isReq=s.type==='request';
+  return `<div class="sponsor-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span class="badge ${isReq?'badge-amber':'badge-green'}" style="font-size:11px">${isReq?'🧳 Traveler Seeking Sponsor':'💼 Sponsor Seeking Traveler'}</span><span class="badge badge-blue" style="font-size:10px">✓ KYC Verified</span></div><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="avatar" style="background:linear-gradient(135deg,#f59e0b,#f97316)">${s.av}</div><div><div style="font-weight:700;font-size:13px;color:#111827">${s.name}</div><div style="font-size:11px;color:#6b7280">⭐ 4.8 · 12 reviews</div></div></div><div class="route-box" style="background:#fefce8"><div><div class="route-city">${s.from}</div></div><div style="text-align:center"><svg style="width:18px;height:18px" fill="none" stroke="#d97706" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg><div style="font-size:10px;color:#9ca3af;margin-top:2px">${s.dates}</div></div><div><div class="route-city">${s.to}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0"><div style="background:#f3f4f6;border-radius:8px;padding:10px;text-align:center"><div style="font-size:11px;color:#6b7280">${isReq?'Can Carry':'Cargo Weight'}</div><div style="font-weight:700;font-size:14px;color:#111827">${s.kg} kg</div></div><div style="background:#fefce8;border-radius:8px;padding:10px;text-align:center"><div style="font-size:11px;color:#d97706">Ticket Budget</div><div style="font-weight:700;font-size:14px;color:#92400e">$${s.budget}</div></div></div><p style="font-size:12px;color:#6b7280;margin-bottom:10px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${s.desc}</p><div class="tags" style="margin-bottom:10px">${s.cats.slice(0,3).map(c=>`<span class="tag">${c}</span>`).join('')}</div><div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:8px;margin-bottom:10px;font-size:11px;color:#92400e">🔐 All sponsored trips require escrow funding, KYC verification, and milestone-based release.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><button class="btn btn-primary btn-sm" style="width:100%;justify-content:center">View Details</button><button class="btn btn-outline btn-sm" style="width:100%;justify-content:center">${isReq?'Sponsor This':'Apply Now'}</button></div></div>`;
+}
+
+function renderCards(){
+  const ht=document.getElementById('home-trips');
+  if(ht)ht.innerHTML=TRIPS.slice(0,3).map(makeTripCard).join('');
+  const ft=document.getElementById('finder-trips');
+  if(ft)ft.innerHTML=TRIPS.map(makeTripCard).join('');
+  const sc=document.getElementById('shipment-cards');
+  if(sc)sc.innerHTML=SHIPMENTS.map(makeShipmentCard).join('');
+  const spc=document.getElementById('sponsor-cards');
+  if(spc)spc.innerHTML=SPONSORS.map(makeSponsorCard).join('');
+}
+
+function showPage(name){
+  const id=name.startsWith('page-')?name:'page-'+name;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el){el.classList.add('active');window.scrollTo(0,0);}
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  renderCards();
+}
+
+function adminTab(key,btn){
+  document.querySelectorAll('.admin-nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['overview','kyc','listings','flagged','disputes','users','countries','payments','logs'].forEach(k=>{
+    const el=document.getElementById('admin-'+k);
+    if(el)el.style.display=k===key?'block':'none';
+  });
+}
+
+function selectCountry(code,el){
+  document.querySelectorAll('.country-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  const d=COUNTRY_DATA[code];
+  if(!d)return;
+  document.getElementById('country-detail-panel').innerHTML=`
+    <div><div class="card" style="margin-bottom:14px"><div class="card-body"><div style="display:flex;align-items:center;gap:14px;margin-bottom:14px"><span style="font-size:48px">${d.flag}</span><div><div style="font-size:22px;font-weight:800;color:#111827">${d.name}</div><div style="font-size:12px;color:#6b7280">ISO Code: ${code}</div></div>${d.strictFood||d.strictMed?'<span class="badge badge-red" style="margin-left:auto">⚠️ High Restriction</span>':''}</div><div style="background:#eff6ff;border-radius:10px;padding:14px"><div style="font-weight:700;color:#1d4ed8;margin-bottom:4px;font-size:13px">Duty-Free Threshold</div><div style="font-size:24px;font-weight:800;color:#2563eb">${d.threshold}</div><div style="font-size:11px;color:#3b82f6;margin-top:2px">Items above this value may attract customs duty</div></div></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      ${[["📱","Electronics & Phones",d.electronics,false],["🍎","Food & Agricultural Items",d.food,d.strictFood],["💊","Medicine & Health Products",d.medicine,d.strictMed],["📲","Phone Rules",d.phones,false],["🔋","Lithium Batteries (IATA)",d.batteries,false],["📝","General Notes",d.notes,false]].map(([i,t,c,w])=>`<div class="card" style="${w?'border-color:#fecaca;':''}"><div class="card-body" style="padding:14px"><div style="font-weight:700;font-size:12px;color:${w?'#dc2626':'#111827'};margin-bottom:6px;display:flex;align-items:center;gap:6px">${i} ${t}${w?'<span class="badge badge-red" style="font-size:10px;margin-left:auto">Strict</span>':''}</div><p style="font-size:11px;color:#6b7280;line-height:1.5">${c}</p></div></div>`).join('')}
+    </div>
+    <div class="card" style="margin-top:10px;border-color:#fecaca"><div class="card-body"><div style="font-weight:700;color:#dc2626;margin-bottom:8px">🚫 Restricted / Prohibited Items</div><div class="tags">${d.restricted.map(r=>`<span style="background:#fff5f5;color:#dc2626;border:1px solid #fecaca;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:500">${r}</span>`).join('')}</div></div></div></div>`;
+}
+
+// Init
+renderCards();
+</script>
+</body>
+</html>
