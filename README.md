@@ -2,7 +2,6 @@
 
 > **The world's first structured, legal-first marketplace for international hand-carry logistics and travel sponsorship.**
 
----
 
 ## 📋 Table of Contents
 
